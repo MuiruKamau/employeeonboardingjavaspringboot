@@ -38,28 +38,43 @@ public class EmployeeService {
         return employeeRepository.save(employee);
     }
 
+    // Edit existing employee
     public EmployeeEntity editEmployee(Long id, EmployeeEntity employeeDetails) {
         Optional<EmployeeEntity> employee = employeeRepository.findById(id);
         if (employee.isPresent()) {
             EmployeeEntity existingEmployee = employee.get();
+
+            // Check if the employee is verified before allowing edit
+            if (existingEmployee.getStatus() != EmployeeStatus.VERIFIED) {
+                return null;  // Return null if the status is not VERIFIED
+            }
+
             existingEmployee.setFullName(employeeDetails.getFullName());
             existingEmployee.setContactInfo(employeeDetails.getContactInfo());
             existingEmployee.setPosition(employeeDetails.getPosition());
             existingEmployee.setDepartment(employeeDetails.getDepartment());
             return employeeRepository.save(existingEmployee);
         }
-        return null; // Handle this with an exception in real-world use case
+        return null; // If the employee is not found, return null
     }
 
+    // Soft delete employee (mark as deleted)
     public void softDeleteEmployee(Long id) {
         Optional<EmployeeEntity> employee = employeeRepository.findById(id);
         if (employee.isPresent()) {
             EmployeeEntity existingEmployee = employee.get();
+
+            // Check if the employee is verified before allowing delete
+            if (existingEmployee.getStatus() != EmployeeStatus.VERIFIED) {
+                return;  // If not verified, don't delete and return
+            }
+
             existingEmployee.setIsDeleted(true); // Mark as deleted
             employeeRepository.save(existingEmployee);
         }
     }
 
+    // Verify employee (set status to VERIFIED)
     public EmployeeEntity verifyEmployee(Long id) {
         Optional<EmployeeEntity> employee = employeeRepository.findById(id);
         if (employee.isPresent()) {
@@ -70,8 +85,13 @@ public class EmployeeService {
         return null;
     }
 
+    // Fetch employees by status (Pending or Verified)
     public List<EmployeeEntity> getEmployeesByStatus(EmployeeStatus status) {
         return employeeRepository.findByStatus(status); // Query by enum (convert to String)
     }
 }
+
+
+
+
 

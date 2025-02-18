@@ -34,15 +34,16 @@ public class EmployeeController {
         EmployeeEntity updatedEmployee = employeeService.editEmployee(id, employeeDetails);
         if (updatedEmployee != null) {
             return ResponseEntity.ok(updatedEmployee);
+        } else {
+            return ResponseEntity.status(403).body(null);  // Forbidden if employee is not verified
         }
-        return ResponseEntity.notFound().build();
     }
 
     // Soft delete employee (mark as deleted)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> softDeleteEmployee(@PathVariable Long id) {
         employeeService.softDeleteEmployee(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().build();  // Forbidden if employee is not verified
     }
 
     // Verify employee (set status to VERIFIED)
@@ -52,7 +53,7 @@ public class EmployeeController {
         if (verifiedEmployee != null) {
             return ResponseEntity.ok(verifiedEmployee);
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.notFound().build(); // Employee not found
     }
 
     // Fetch employees by status (Pending or Verified)
@@ -76,51 +77,5 @@ public class EmployeeController {
 
 
 
-/*@RestController
-@RequestMapping("/api/employees")
-public class EmployeeController {
 
-    @Autowired
-    private EmployeeService employeeService;
 
-    // Create new employee
-    @PostMapping
-    public ResponseEntity<EmployeeEntity> onboardEmployee(@RequestBody EmployeeRequestDto employeeRequestDto) {
-        EmployeeEntity createdEmployee = employeeService.createEmployee(employeeRequestDto);
-        return ResponseEntity.ok(createdEmployee);
-    }
-
-    // Edit existing employee
-    @PutMapping("/{id}")
-    public ResponseEntity<EmployeeEntity> editEmployee(@PathVariable Long id, @RequestBody EmployeeEntity employeeDetails) {
-        EmployeeEntity updatedEmployee = employeeService.editEmployee(id, employeeDetails);
-        if (updatedEmployee != null) {
-            return ResponseEntity.ok(updatedEmployee);
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    // Soft delete employee (mark as deleted)
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> softDeleteEmployee(@PathVariable Long id) {
-        employeeService.softDeleteEmployee(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    // Verify employee (set status to VERIFIED)
-    @PatchMapping("/{id}/verify")
-    public ResponseEntity<EmployeeEntity> verifyEmployee(@PathVariable Long id) {
-        EmployeeEntity verifiedEmployee = employeeService.verifyEmployee(id);
-        if (verifiedEmployee != null) {
-            return ResponseEntity.ok(verifiedEmployee);
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    // Fetch employees by status (Pending or Verified)
-    @GetMapping("/status/{status}")
-    public ResponseEntity<List<EmployeeEntity>> getEmployeesByStatus(@PathVariable EmployeeStatus status) {
-        List<EmployeeEntity> employees = employeeService.getEmployeesByStatus(status);
-        return ResponseEntity.ok(employees);
-    }
-}*/
