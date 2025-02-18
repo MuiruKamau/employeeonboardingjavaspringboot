@@ -1,7 +1,5 @@
 package com.app.onboarding.controller;
 
-
-
 import com.app.onboarding.dto.RegistrationLoginDto.EmployeeRequestDto;
 import com.app.onboarding.model.EmployeeEntity;
 import com.app.onboarding.model.EmployeeStatus;
@@ -9,12 +7,16 @@ import com.app.onboarding.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
+
+    private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
 
     @Autowired
     private EmployeeService employeeService;
@@ -57,16 +59,22 @@ public class EmployeeController {
     @GetMapping("/status/{status}")
     public ResponseEntity<List<EmployeeEntity>> getEmployeesByStatus(@PathVariable String status) {
         try {
-            EmployeeStatus employeeStatus = EmployeeStatus.valueOf(status);  // Convert string to enum
+            // Convert string to enum
+            EmployeeStatus employeeStatus = EmployeeStatus.valueOf(status); // Manually convert to enum
+
             List<EmployeeEntity> employees = employeeService.getEmployeesByStatus(employeeStatus);
             return ResponseEntity.ok(employees);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);  // If the status value is invalid
+            logger.error("Invalid status: {}", status, e);
+            return ResponseEntity.badRequest().body(null); // Return 400 if invalid status
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(null);  // General error handling
+            logger.error("Error in getEmployeesByStatus: ", e);
+            return ResponseEntity.status(500).body(null); // General error handling
         }
     }
 }
+
+
 
 /*@RestController
 @RequestMapping("/api/employees")

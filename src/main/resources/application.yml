@@ -19,3 +19,9 @@ spring:
       allowed-origins: "*"
       allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
       allowed-headers: "*"
+
+      logging:
+        level:
+          org.springframework: DEBUG
+          com.app.onboarding: DEBUG
+          org.hibernate: DEBUG

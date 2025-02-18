@@ -71,7 +71,7 @@ public class EmployeeService {
     }
 
     public List<EmployeeEntity> getEmployeesByStatus(EmployeeStatus status) {
-        return employeeRepository.findByStatusAndIsDeletedFalse(status.name()); // Query by enum (convert to String)
+        return employeeRepository.findByStatus(status); // Query by enum (convert to String)
     }
 }
 

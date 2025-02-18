@@ -3,6 +3,7 @@ package com.app.onboarding.repository;
 
 
 import com.app.onboarding.model.EmployeeEntity;
+import com.app.onboarding.model.EmployeeStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +17,8 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> 
 
     // Fetch employees based on status and excluding deleted ones
     List<EmployeeEntity> findByStatusAndIsDeletedFalse(String status);
+
+    List<EmployeeEntity> findByStatus(EmployeeStatus status);
 }
 
 
