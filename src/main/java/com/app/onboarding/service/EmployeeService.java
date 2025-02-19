@@ -93,6 +93,12 @@ public class EmployeeService {
         Optional<EmployeeEntity> employee = employeeRepository.findById(id);
         if (employee.isPresent()) {
             EmployeeEntity existingEmployee = employee.get();
+
+            // Check if the employee is deleted
+            if (existingEmployee.isDeleted()) {
+                throw new IllegalStateException("Cannot verify a deleted employee.");
+            }
+
             existingEmployee.setStatus(EmployeeStatus.VERIFIED); // Set status to VERIFIED
             return employeeRepository.save(existingEmployee);
         }
@@ -114,99 +120,7 @@ public class EmployeeService {
         return employeeRepository.findByIsDeletedTrue();
     }
 }
-/*package com.app.onboarding.service;
 
-import com.app.onboarding.dto.RegistrationLoginDto.EmployeeRequestDto;
-import com.app.onboarding.model.EmployeeEntity;
-import com.app.onboarding.model.EmployeeStatus;
-import com.app.onboarding.repository.EmployeeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
-
-@Service
-public class EmployeeService {
-
-    @Autowired
-    private EmployeeRepository employeeRepository;
-
-    // Create a new employee with status "PENDING_VERIFICATION" by default
-    public EmployeeEntity createEmployee(EmployeeRequestDto employeeRequestDTO) {
-        EmployeeEntity employee = new EmployeeEntity();
-        employee.setFullName(employeeRequestDTO.getFullName());
-        employee.setContactInfo(employeeRequestDTO.getContactInfo());
-        employee.setPosition(employeeRequestDTO.getPosition());
-        employee.setDepartment(employeeRequestDTO.getDepartment());
-        employee.setEmail(employeeRequestDTO.getEmail());
-        employee.setEmployeeType(employeeRequestDTO.getEmployeeType());
-        employee.setDateJoined(employeeRequestDTO.getDateJoined());
-        employee.setDob(employeeRequestDTO.getDob());
-
-        // Set default status to PENDING_VERIFICATION if not provided
-        if (employeeRequestDTO.getStatus() == null) {
-            employee.setStatus(EmployeeStatus.PENDING_VERIFICATION); // Default status
-        } else {
-            employee.setStatus(employeeRequestDTO.getStatus());
-        }
-
-        return employeeRepository.save(employee);
-    }
-
-    // Edit existing employee
-    public EmployeeEntity editEmployee(Long id, EmployeeEntity employeeDetails) {
-        Optional<EmployeeEntity> employee = employeeRepository.findById(id);
-        if (employee.isPresent()) {
-            EmployeeEntity existingEmployee = employee.get();
-
-            // Check if the employee is verified before allowing edit
-            if (existingEmployee.getStatus() != EmployeeStatus.VERIFIED) {
-                return null;  // Return null if the status is not VERIFIED
-            }
-
-            existingEmployee.setFullName(employeeDetails.getFullName());
-            existingEmployee.setContactInfo(employeeDetails.getContactInfo());
-            existingEmployee.setPosition(employeeDetails.getPosition());
-            existingEmployee.setDepartment(employeeDetails.getDepartment());
-            return employeeRepository.save(existingEmployee);
-        }
-        return null; // If the employee is not found, return null
-    }
-
-    // Soft delete employee (mark as deleted)
-    public void softDeleteEmployee(Long id) {
-        Optional<EmployeeEntity> employee = employeeRepository.findById(id);
-        if (employee.isPresent()) {
-            EmployeeEntity existingEmployee = employee.get();
-
-            // Check if the employee is verified before allowing delete
-            if (existingEmployee.getStatus() != EmployeeStatus.VERIFIED) {
-                return;  // If not verified, don't delete and return
-            }
-
-            existingEmployee.setIsDeleted(true); // Mark as deleted
-            employeeRepository.save(existingEmployee);
-        }
-    }
-
-    // Verify employee (set status to VERIFIED)
-    public EmployeeEntity verifyEmployee(Long id) {
-        Optional<EmployeeEntity> employee = employeeRepository.findById(id);
-        if (employee.isPresent()) {
-            EmployeeEntity existingEmployee = employee.get();
-            existingEmployee.setStatus(EmployeeStatus.VERIFIED); // Set status to VERIFIED
-            return employeeRepository.save(existingEmployee);
-        }
-        return null;
-    }
-
-    // Fetch employees by status (Pending or Verified)
-    public List<EmployeeEntity> getEmployeesByStatus(EmployeeStatus status) {
-        return employeeRepository.findByStatus(status); // Query by enum (convert to String)
-    }
-}
-*/
 
 
 
