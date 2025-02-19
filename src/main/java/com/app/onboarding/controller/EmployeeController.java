@@ -4,6 +4,8 @@ import com.app.onboarding.dto.RegistrationLoginDto.EmployeeRequestDto;
 import com.app.onboarding.model.EmployeeEntity;
 import com.app.onboarding.model.EmployeeStatus;
 import com.app.onboarding.service.EmployeeService;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -86,7 +88,11 @@ public class EmployeeController {
 
     // Fetch employees by status (Pending or Verified)
     @GetMapping("/status/{status}")
-    public ResponseEntity<?> getEmployeesByStatus(@PathVariable String status) {
+    public ResponseEntity<?> getEmployeesByStatus(@Parameter(
+            description = "Employee status",
+            required = true,
+            schema = @Schema(allowableValues = {"VERIFIED", "PENDING_VERIFICATION"})
+    ) @PathVariable String status) {
         try {
             EmployeeStatus employeeStatus = EmployeeStatus.valueOf(status); // Convert string to enum
             List<EmployeeEntity> employees = employeeService.getEmployeesByStatus(employeeStatus);
