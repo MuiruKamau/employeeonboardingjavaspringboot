@@ -22,6 +22,9 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> 
 
     // Fetch employees that are deleted
     List<EmployeeEntity> findByIsDeletedTrue();
+
+    List<EmployeeEntity> findByStatusAndIsDeletedFalse(EmployeeStatus status);
+
 }
 
 

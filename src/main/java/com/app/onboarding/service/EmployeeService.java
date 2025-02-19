@@ -107,8 +107,12 @@ public class EmployeeService {
 
     // Fetch employees by status (Pending or Verified)
     public List<EmployeeEntity> getEmployeesByStatus(EmployeeStatus status) {
-        return employeeRepository.findByStatus(status);
+        return employeeRepository.findByStatusAndIsDeletedFalse(status);
     }
+
+    /*public List<EmployeeEntity> getEmployeesByStatus(EmployeeStatus status) {
+        return employeeRepository.findByStatus(status);
+    }*/
 
     // Fetch all employees that are not deleted
     public List<EmployeeEntity> getAllActiveEmployees() {
