@@ -44,6 +44,11 @@ public class EmployeeService {
         if (employee.isPresent()) {
             EmployeeEntity existingEmployee = employee.get();
 
+            // Check if the employee is deleted
+            if (existingEmployee.isDeleted()) {
+                throw new IllegalStateException("Cannot edit a deleted employee.");
+            }
+
             // Check if the employee is verified before allowing edit
             if (existingEmployee.getStatus() == EmployeeStatus.VERIFIED) {
                 throw new IllegalStateException("Cannot update a VERIFIED employee.");
@@ -65,6 +70,11 @@ public class EmployeeService {
         Optional<EmployeeEntity> employee = employeeRepository.findById(id);
         if (employee.isPresent()) {
             EmployeeEntity existingEmployee = employee.get();
+
+            // Check if the employee is already deleted
+            if (existingEmployee.isDeleted()) {
+                throw new IllegalStateException("Employee is already deleted.");
+            }
 
             // Check if the employee is verified before allowing delete
             if (existingEmployee.getStatus() == EmployeeStatus.VERIFIED) {
@@ -97,6 +107,11 @@ public class EmployeeService {
     // Fetch all employees that are not deleted
     public List<EmployeeEntity> getAllActiveEmployees() {
         return employeeRepository.findByIsDeletedFalse();
+    }
+
+    // Fetch all deleted employees
+    public List<EmployeeEntity> getDeletedEmployees() {
+        return employeeRepository.findByIsDeletedTrue();
     }
 }
 /*package com.app.onboarding.service;

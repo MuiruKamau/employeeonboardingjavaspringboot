@@ -107,6 +107,18 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching active employees: " + e.getMessage());
         }
     }
+
+    // Fetch all deleted employees
+    @GetMapping("/deleted")
+    public ResponseEntity<?> getDeletedEmployees() {
+        try {
+            List<EmployeeEntity> deletedEmployees = employeeService.getDeletedEmployees();
+            return ResponseEntity.ok(deletedEmployees);
+        } catch (Exception e) {
+            logger.error("Error fetching deleted employees: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching deleted employees: " + e.getMessage());
+        }
+    }
 }
 /*package com.app.onboarding.controller;
 
