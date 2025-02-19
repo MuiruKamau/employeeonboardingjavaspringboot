@@ -1,6 +1,7 @@
 package com.app.onboarding.service;
 
 import com.app.onboarding.dto.RegistrationLoginDto.EmployeeRequestDto;
+import com.app.onboarding.dto.RegistrationLoginDto.EmployeeUpdateDto;
 import com.app.onboarding.model.EmployeeEntity;
 import com.app.onboarding.model.EmployeeStatus;
 import com.app.onboarding.repository.EmployeeRepository;
@@ -39,10 +40,10 @@ public class EmployeeService {
     }
 
     // Edit existing employee
-    public EmployeeEntity editEmployee(Long id, EmployeeEntity employeeDetails) {
-        Optional<EmployeeEntity> employee = employeeRepository.findById(id);
-        if (employee.isPresent()) {
-            EmployeeEntity existingEmployee = employee.get();
+    public EmployeeEntity editEmployee(Long id, EmployeeUpdateDto updateDto) {
+        Optional<EmployeeEntity> employeeOpt = employeeRepository.findById(id);
+        if (employeeOpt.isPresent()) {
+            EmployeeEntity existingEmployee = employeeOpt.get();
 
             // Check if the employee is deleted
             if (existingEmployee.isDeleted()) {
@@ -55,10 +56,13 @@ public class EmployeeService {
             }
 
             // Update only allowed fields
-            existingEmployee.setFullName(employeeDetails.getFullName());
-            existingEmployee.setContactInfo(employeeDetails.getContactInfo());
-            existingEmployee.setPosition(employeeDetails.getPosition());
-            existingEmployee.setDepartment(employeeDetails.getDepartment());
+            existingEmployee.setFullName(updateDto.getFullName());
+            existingEmployee.setContactInfo(updateDto.getContactInfo());
+            existingEmployee.setPosition(updateDto.getPosition());
+            existingEmployee.setDepartment(updateDto.getDepartment());
+            existingEmployee.setEmail(updateDto.getEmail());
+            existingEmployee.setEmployeeType(updateDto.getEmployeeType());
+            existingEmployee.setDob(updateDto.getDob());
 
             return employeeRepository.save(existingEmployee);
         }

@@ -1,6 +1,7 @@
 package com.app.onboarding.controller;
 
 import com.app.onboarding.dto.RegistrationLoginDto.EmployeeRequestDto;
+import com.app.onboarding.dto.RegistrationLoginDto.EmployeeUpdateDto;
 import com.app.onboarding.model.EmployeeEntity;
 import com.app.onboarding.model.EmployeeStatus;
 import com.app.onboarding.service.EmployeeService;
@@ -38,9 +39,9 @@ public class EmployeeController {
 
     // Edit existing employee
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> editEmployee(@PathVariable Long id, @RequestBody EmployeeEntity employeeDetails) {
+    public ResponseEntity<?> editEmployee(@PathVariable Long id, @RequestBody EmployeeUpdateDto updateDto) {
         try {
-            EmployeeEntity updatedEmployee = employeeService.editEmployee(id, employeeDetails);
+            EmployeeEntity updatedEmployee = employeeService.editEmployee(id, updateDto);
             return ResponseEntity.ok(updatedEmployee);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
